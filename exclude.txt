@@ -1,3 +1,4 @@
+boot/*
 dev/*
 etc/udev/rules.d/70-persistent-net.rules
 proc/*
@@ -5,7 +6,8 @@ root/.ssh/*
 sys/*
 tmp/*
 var/lock/subsys/local*
-var/log/*
+var/log/*.log
+var/log/*/*.log
 var/run/*
 var/tmp/*
 etc/ssh/ssh_host_*
