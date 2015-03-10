@@ -147,35 +147,6 @@ function modify_image {
   EOF
 }
 
-#
-# Perform distribution-specific changes.
-#
-distro=""
-if [[ -f $zroot/etc/redhat-release ]]; then
-	distro="redhat"
-elif [[ -f $zroot/etc/lsb-release ]]; then
-	if egrep -s Ubuntu $zroot/etc/lsb-release; then
-		distro="ubuntu"
-	elif [[ -f $zroot/etc/debian_version ]]; then
-		distro="debian"
-	fi
-elif [[ -f $zroot/etc/debian_version ]]; then
-	distro="debian"
-fi
-
-if [[ -z $distro ]]; then
-	echo "ERROR: Unsupported distribution"
-	exit 1
-fi
-
-case "$distro" in
-	"ubuntu") ;;
-	"redhat") ;;
-	"debian") ;;
-	*)	printf "ERROR: %s is an unsupported distribution" $distro
-		exit 1;;
-esac
-
 function create_file {
   echo "==> Creating image file..."
   zfs snapshot zones/$iuuid@final
