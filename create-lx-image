@@ -6,14 +6,12 @@ IFS=$'\n\t'
 BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="centos-6-lx"
 
-# Given a tar file, create a zfs send stream dataset template for a lx zone.
-
 usage() {
 cat <<EOF
 
   Usage: $0 -t {path to archive}
 
-  Import an image from images.joyent.com into JPC
+  Create an lx brand CentOS image from a given tar file
 
   OPTIONS:
   -t The path to the tar archive
