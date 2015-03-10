@@ -5,6 +5,8 @@ IFS=$'\n\t'
 
 BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="centos-6-lx"
+tarball=
+iuuid=$(uuid -v4)
 
 usage() {
 cat <<EOF
@@ -19,9 +21,6 @@ cat <<EOF
 
 EOF
 }
-
-tarball=
-iuuid=$(uuid -v4)
 
 while getopts "ht:" OPTION
 do
