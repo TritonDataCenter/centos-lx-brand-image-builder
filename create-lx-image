@@ -24,61 +24,61 @@ EOF
 
 while getopts "ht:" OPTION
 do
-	case $OPTION in
+  case $OPTION in
     h)
       usage
       exit 1
       ;;
-		t)
+    t)
       tarball="$OPTARG"
       ;;
-		?)
+    ?)
       usage
       exit
       ;;
-	esac
+  esac
 done
 
 
 if [[ -z $tarball ]]; then
-	echo "==> ERROR: the install archive is required"
-	usage
+  echo "==> ERROR: the install archive is required"
+  usage
   exit 1
 fi
 
 if [[ ! -a "$tarball" ]]; then
-	printf "==> ERROR: %s: file or directory not found\n" $tarball
-	exit 1
+  printf "==> ERROR: %s: file or directory not found\n" $tarball
+  exit 1
 fi
 
 if [[ "$(echo $tarball | cut -c 1)" != "/" ]]; then
-	printf "==> Pathname '%s' specified to -t must be absolute\n" $tarball
-	exit 1
+  printf "==> Pathname '%s' specified to -t must be absolute\n" $tarball
+  exit 1
 fi
 
 if [[ ! -r "$tarball" ]]; then
-	printf "==> Cannot read file '%s'\n" $tarball
-	exit 1
+  printf "==> Cannot read file '%s'\n" $tarball
+  exit 1
 fi
 
 if [[ ! -f "$tarball" ]]; then
-	echo "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
-	exit 1
+  echo "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
+  exit 1
 fi
 
 filetype=$({ LC_ALL=C file $tarball | awk '{print $2}' ; } 2>/dev/null)
 
 if [[ "$filetype" = "gzip" ]]; then
-	gtaropts="-xz"
+  gtaropts="-xz"
 elif [[ "$filetype" = "bzip2" ]]; then
-	gtaropts="-xj"
+  gtaropts="-xj"
 elif [[ "$filetype" = "compressed" ]]; then
-	gtaropts="-xZ"
+  gtaropts="-xZ"
 elif [[ "$filetype" = "USTAR" ]]; then
-	gtaropts="-x"
+  gtaropts="-x"
 else
-	printf "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
-	exit 1
+  printf "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
+  exit 1
 fi
 
 gtaropts="${gtaropts}f"
@@ -104,8 +104,8 @@ function create_dataset {
 function install_tar {
   echo "=> Installing the tar archive, this will take a few minutes..."
   if ! ( cd "$zroot" && gtar "$gtaropts" "$tarball" ) ; then
-  	echo "==> Error: extraction from tar archive failed."
-  	zfs destroy -r zones/$iuuid
+    echo "==> Error: extraction from tar archive failed."
+    zfs destroy -r zones/$iuuid
   fi
 }
 
