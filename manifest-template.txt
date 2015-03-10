@@ -1,0 +1,37 @@
+{
+  "v": "2",
+  "name": "${name}",
+  "version": "${version}",
+  "cpu_type": "host",
+  "description": "Experimental LX Brand CentOS 6 image",
+  "homepage": "${homepage}",
+  "published_at": "${now}",
+  "type": "lx-dataset",
+  "os": "other",
+  "files": [
+    {
+      "sha1": "${shasum}",
+      "size": ${filesize},
+      "compression": "gzip"
+    }
+  ],
+    "requirements": {
+      "networks": [
+        {
+          "name": "net0",
+          "description": "public"
+        }
+      ],
+      "min_platform": {
+        "7.0": "20140807T151857Z"
+      }
+    },
+  "uuid": "${uuid}",
+  "public": false,
+  "owner": "00000000-0000-0000-0000-000000000000",
+  "users": [{"name": "root"}],
+  "tags": {
+    "role": "os"
+  },
+  "urn": "sdc:sdc:${name}:${version}"
+}
