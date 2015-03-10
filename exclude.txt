@@ -5,7 +5,7 @@ proc/*
 root/.bash_history
 root/.pki/
 root/.ssh/*
-root/centos-lx-brand-image-builder/
+root/centos-lx-brand-image-builder*
 sys/*
 tmp/*
 var/lock/subsys/local*
