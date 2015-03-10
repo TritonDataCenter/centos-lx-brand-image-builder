@@ -3,7 +3,10 @@ data
 dev/*
 etc/udev/rules.d/70-persistent-net.rules
 proc/*
+root/anaconda-ks.cfg
 root/.bash_history
+root/install.log
+root/install.log.syslog
 root/.pki/
 root/.ssh/*
 root/centos-lx-brand-image-builder*
