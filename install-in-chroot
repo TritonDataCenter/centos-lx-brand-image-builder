@@ -6,6 +6,9 @@
 CHROOT=/data/chroot
 MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
+NAME="centos-6-lx"
+BUILD_DATE=$(date +%Y%m%d)
+DOCS="https://docs.joyent.com/images"
 
 echo "==> Installing CentOS 6.6 into $CHROOT"
 
@@ -33,4 +36,22 @@ yum --installroot=$CHROOT clean all
 echo "==> Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
 
-echo "==> Done!"
+echo "==> Creating /etc/motd"
+cat << MOTD > $CHROOT/etc/motd
+   __        .                   .
+ _|  |_      | .-. .  . .-. :--. |-
+|_    _|     ;|   ||  |(.-' |  | |
+  |__|   \`--'  \`-' \`;-| \`-' '  ' \`-'
+                   /  ;  Instance ($NAME $BUILDDATE)
+                   \`-'   $DOCS
+MOTD
+
+echo "==> Creating /etc/product file"
+cat << PRODUCT > $CHROOT/etc/product
+Name: Joyent Instance
+Image: $NAME $BUILDDATE
+Documentation: $DOCS
+Description: $NAME $BUILDDATE LX-brand image.
+PRODUCT
+
+echo "==> Installation complete!"
