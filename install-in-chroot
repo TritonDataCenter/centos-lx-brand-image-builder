@@ -21,7 +21,7 @@ wget -O /var/tmp/$PACKAGE $MIRROR/$PACKAGE
 
 rpm -i --root=$CHROOT --nodeps /var/tmp/$PACKAGE
 
-yum --installroot=$CHROOT install -y rpm-build yum
+yum --installroot=$CHROOT install -y @core
 
 echo "Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
