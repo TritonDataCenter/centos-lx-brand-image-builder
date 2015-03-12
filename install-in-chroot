@@ -14,7 +14,7 @@ fi
 
 rpm --rebuilddb --root=$CHROOT
 
-MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages/
+MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
 
 wget -O /var/tmp/$PACKAGE $MIRROR/$PACKAGE
