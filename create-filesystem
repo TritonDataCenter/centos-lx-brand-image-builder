@@ -15,7 +15,7 @@ cp ./guest-tools/lib/smartdc/joyent_rc.local $SOURCE/etc/rc.d/rc.local
 echo "==> Done!"
 sleep 1 
 
-echo "==> Saving installation as $TARGET"
+echo "==> Saving installation as $TARGET. This may take a few minutes."
 tar czf $TARGET --exclude-from=exclude.txt $SOURCE/
 
 echo "==> Done! $TARGET"
