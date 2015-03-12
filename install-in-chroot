@@ -4,9 +4,13 @@
 #
 
 CHROOT=/data/chroot
+MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
+PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
+
+echo "==> Installing CentOS 6.6 into $CHROOT"
 
 if [ -d $CHROOT ]; then
-  echo "Found previous chroot. Deleting and creating a new one."
+  echo "====> Found previous chroot. Deleting and creating a new one."
   rm -rf $CHROOT
   mkdir -p $CHROOT
   mkdir -p $CHROOT/var/lib/rpm
@@ -14,16 +18,19 @@ fi
 
 rpm --rebuilddb --root=$CHROOT
 
-MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
-PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
-
+echo "==> Getting CentOS 6.6 rpm..."
 wget -O /var/tmp/$PACKAGE $MIRROR/$PACKAGE
 
+echo "==> Installing..."
 rpm -i --root=$CHROOT --nodeps /var/tmp/$PACKAGE
 
+echo "==> Installing @core packages..."
 yum --installroot=$CHROOT install -y @core
 
+echo "==> Cleaning up yum cache..."
 yum --installroot=$CHROOT clean all
 
-echo "Removing /var/tmp/$PACKAGE"
+echo "==> Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
+
+echo "==> Done!"
