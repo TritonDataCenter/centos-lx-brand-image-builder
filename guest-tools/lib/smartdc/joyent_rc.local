@@ -3,48 +3,10 @@
 # Copyright (c) 2014, Joyent, Inc. All rights reserved.
 #
 # Joyent specific scripts that are ran on each boot
-# this is called from /etc/rc.local
 
 # load common functions and vars
 . /lib/smartdc/lib_smartdc_scripts.cfg
 
-# DO NOT use lib_smartdc_fatal in here
-# You want the rest of the init script to run
-# instead use info with ERROR
-# this will show up in logs and on console
-
-# CentOS and Fedora
-setup_redhat() {
-
-}
-
-# Debian and Ubuntu
-setup_debian() {
-  # regenerate SSH keys if they're missing
-  which dpkg-reconfigure >/dev/null 2>&1 || lib_smartdc_info "ERROR: \
-    dpkg-reconfigure not found" 
-  keycount=$(find /etc/ssh -name 'ssh_host_*_key*' | wc -l)
-  if [[ $keycount -eq 0 ]] ; then 
-    lib_smartdc_info "reconfiguring openssh server"
-    dpkg-reconfigure openssh-server
-  fi
-}
-
-# Start of Main
-case `uname -s | tr '[:upper:]' '[:lower:]'` in
-  linux)
-    if [[ -f /etc/redhat-release ]] ; then
-      setup_redhat
-    elif [[ -f /etc/debian_version ]] ; then
-      setup_debian
-    fi
-    ;;
-  *)
-    lib_smartdc_info "ERROR: OS specific features not implemented"
-    ;;
-esac
-
-# scripts that can run on all systems
 (/lib/smartdc/set-root-authorized-keys)
 (/lib/smartdc/run-operator-script)
 (/lib/smartdc/get-user-data)
