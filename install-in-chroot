@@ -23,5 +23,7 @@ rpm -i --root=$CHROOT --nodeps /var/tmp/$PACKAGE
 
 yum --installroot=$CHROOT install -y @core
 
+yum --installroot=$CHROOT clean all
+
 echo "Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
