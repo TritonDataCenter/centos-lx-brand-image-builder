@@ -176,9 +176,9 @@ function create_file {
   echo "==>"
 }
 
-# TODO
 function create_manifest {
   echo "==> Creating manifest file..."
+  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -n lx-centos-6 -v ${BUILD_DATE}
   echo "==> done!"
   echo "==>"
 }
