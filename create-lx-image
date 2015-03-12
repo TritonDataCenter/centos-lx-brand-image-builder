@@ -7,6 +7,7 @@ BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="centos-6-lx"
 tarball=
 iuuid=$(uuid -v4)
+iuuid=centos-6-$BUILD_DATE
 
 usage() {
 cat <<EOF
@@ -150,10 +151,10 @@ else
 fi
 
   echo "====> Setting up fstab..."
-  cat > $zroot/etc/fstab <<- EOF
-  	none		/			zfs	defaults	1 1
-  	proc		/proc			proc	defaults	0 0
-  EOF
+cat << EOF > $zroot/etc/fstab
+none		/			zfs	defaults	1 1
+proc		/proc			proc	defaults	0 0
+EOF
   
   echo "==> Image modification complete."
 }
