@@ -6,4 +6,5 @@ IFS=$'\n\t'
 BUILD_DATE=$(date +%Y%m%d)
 
 # Tars up the required system files and dirctories.
-tar cvzf ./centos-6-${BUILD_DATE}.tar.gz --exclude-from=exclude.txt /data/chroot/
+cd /data/chroot/
+tar cvzf ./centos-6-${BUILD_DATE}.tar.gz --exclude-from=exclude.txt .
