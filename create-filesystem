@@ -10,7 +10,7 @@ TARGET="centos-6-lx-${BUILD_DATE}.tar.gz"
 echo "==> Installing the Guest tools in $SOURCE"
 cp -r ./guest-tools/lib/smartdc $SOURCE/lib/
 cp -r ./guest-tools/usr/sbin/mdata-* $SOURCE/usr/sbin/
-cp -r ./usr/share/man/man1/mdata-* $SOURCE/usr/share/man/man1/
+cp -r ./guest-tools/usr/share/man/man1/mdata-* $SOURCE/usr/share/man/man1/
 cp ./guest-tools/lib/smartdc/joyent_rc.local $SOURCE/etc/rc.local
 echo "==> Done!"
 
