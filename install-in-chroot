@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+# Build a chroot with a CentOS 6.6 base install.
+#
+
+CHROOT=/data/chroot
+
+mkdir -p $CHROOT
+
+mkdir -p $CHROOT/var/lib/rpm
+rpm --rebuilddb --root=$CHROOT
+
+MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages/
+PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
+
+wget $MIRROR/$PACKAGE
+rpm -i --root=$CHROOT --nodeps $PACKAGE
+
+yum --installroot=$CHROOT install -y rpm-build yum
