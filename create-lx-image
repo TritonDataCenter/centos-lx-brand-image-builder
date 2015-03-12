@@ -178,7 +178,7 @@ function create_file {
 
 function create_manifest {
   echo "==> Creating manifest file..."
-  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -n lx-centos-6 -v ${BUILD_DATE}
+  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -n lx-centos-6 -v ${BUILD_DATE} > ${IMAGE_NAME}-${BUILD_DATE}.json
   echo "==> done!"
   echo "==>"
 }
