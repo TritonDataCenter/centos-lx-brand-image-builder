@@ -4,9 +4,7 @@ dev/*
 etc/udev/rules.d/70-persistent-net.rules
 proc/*
 root/.bash_history
-root/.pki/
 root/.ssh/*
-root/centos-lx-brand-image-builder*
 sys/*
 tmp/*
 var/lock/subsys/local*
