@@ -4,6 +4,15 @@ set -euo pipefail
 IFS=$'\n\t'
 
 BUILD_DATE=$(date +%Y%m%d)
+SOURCE=/data/chroot
+TARGET="centos-6-lx-${BUILD_DATE}.tar.gz"
 
-# Tars up the required system files and dirctories.
-tar cvzf ./centos-6-lx-${BUILD_DATE}.tar.gz --exclude-from=exclude.txt /data/chroot/
+echo "==> Installing the Guest tools in $SOURCE"
+cp -r ./guest-tools/lib/smartdc $SOURCE/lib/
+cp -r ./guest-tools/usr/sbin/mdata-* $SOURCE/usr/sbin/
+cp -r ./usr/share/man/man1/mdata-* $SOURCE/usr/share/man/man1/
+cp ./guest-tools/lib/smartdc/joyent_rc.local $SOURCE/etc/rc.local
+echo "==> Done!"
+
+echo "==> Saving installation as $TARGET"
+tar cvzf $TARGET --exclude-from=exclude.txt $SOURCE/
