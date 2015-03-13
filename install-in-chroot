@@ -43,6 +43,9 @@ echo "==> Setting TZ to UTC"
 rm $CHROOT/etc/localtime
 cp $CHROOT/usr/share/zoneinfo/UTC $CHROOT/etc/localtime
 
+echo "==> Disabling PasswordAuthentication"
+sed s/PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $CHROOT/etc/ssh/sshd_config
+
 echo "==> Creating /etc/motd"
 cat << MOTD > $CHROOT/etc/motd
    __        .                   .
