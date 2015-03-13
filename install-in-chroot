@@ -6,7 +6,7 @@
 CHROOT=/data/chroot
 MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
-NAME="CentOS 6 LX Brand"
+NAME="CentOS 6.6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
 DOCS="https://docs.joyent.com/images"
 
@@ -62,7 +62,7 @@ cat << PRODUCT > $CHROOT/etc/product
 Name: Joyent Instance
 Image: $NAME $BUILDDATE
 Documentation: $DOCS
-Description: $NAME $BUILDDATE LX-brand image.
+Description: $NAME $BUILDDATE.
 PRODUCT
 
 echo "==> Installation complete!"
