@@ -40,11 +40,8 @@ echo "==> Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
 
 echo "==> Setting TZ to UTC"
-pushd $PWD
-cd $CHROOT
-mv etc/localtime etc/localtime-backup
-ln -s usr/share/zoneinfo/UTC etc/localtime
-popd
+mv $CHROOT/etc/localtime $CHROOT/etc/localtime-backup
+cp $CHROOT/usr/share/zoneinfo/UTC $CHROOT/etc/localtime
 
 echo "==> Creating /etc/motd"
 cat << MOTD > $CHROOT/etc/motd
