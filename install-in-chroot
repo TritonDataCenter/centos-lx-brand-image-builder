@@ -6,7 +6,7 @@
 CHROOT=/data/chroot
 MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
-NAME="centos-6-lx"
+NAME="CentOS 6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
 DOCS="https://docs.joyent.com/images"
 
