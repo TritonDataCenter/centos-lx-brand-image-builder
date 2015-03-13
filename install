@@ -85,3 +85,5 @@ tar czf $TARGET --exclude-from=exclude.txt $SOURCE/
 
 echo "==> Installation complete!"
 echo "==> $TARGET"
+
+exit 0
