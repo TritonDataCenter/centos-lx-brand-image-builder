@@ -60,9 +60,9 @@ MOTD
 echo "==> Creating /etc/product file"
 cat << PRODUCT > $CHROOT/etc/product
 Name: Joyent Instance
-Image: $NAME $BUILDDATE
+Image: $NAME $BUILD_DATE
 Documentation: $DOCS
-Description: $NAME $BUILDDATE.
+Description: $NAME $BUILD_DATE.
 PRODUCT
 
 echo "==> Installation complete!"
