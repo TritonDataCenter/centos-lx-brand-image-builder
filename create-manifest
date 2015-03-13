@@ -97,7 +97,10 @@ cat <<EOF
         "name": "net0",
         "description": "public"
       }
-    ]
+    ],
+    "min_platform": {
+         "7.0": "20140807T151857Z"
+       }
   },
   "uuid": "${vm_uuid}",
   "public": false,
