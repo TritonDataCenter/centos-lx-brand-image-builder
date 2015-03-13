@@ -36,6 +36,12 @@ yum --installroot=$CHROOT clean all
 echo "==> Removing /var/tmp/$PACKAGE"
 rm -rf /var/tmp/$PACKAGE
 
+echo "==> Setting TZ to UTC"
+pushd $PWD
+cd $CHROOT
+ln -s usr/share/zoneinfo/UTC etc/localtime
+popd
+
 echo "==> Creating /etc/motd"
 cat << MOTD > $CHROOT/etc/motd
    __        .                   .
