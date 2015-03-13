@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 #
-# Build a chroot with a CentOS 6.6 base install.
+# Install CentOS 6.6 into a directory, modify the installation, then tar it up.
 #
+
+set -euo pipefail
+IFS=$'\n\t'
 
 CHROOT=/data/chroot
 MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
@@ -9,6 +12,8 @@ PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
 NAME="CentOS 6.6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
 DOCS="https://docs.joyent.com/images"
+SOURCE=/data/chroot
+TARGET="centos-6-lx-${BUILD_DATE}.tar.gz"
 
 echo "==> Installing CentOS 6.6 into $CHROOT"
 
@@ -24,7 +29,7 @@ rpm --rebuilddb --root=$CHROOT
 echo "==> Getting CentOS 6.6 rpm..."
 wget -O /var/tmp/$PACKAGE $MIRROR/$PACKAGE
 
-echo "==> Installing..."
+echo "==> Installing rpm package..."
 rpm -i --root=$CHROOT --nodeps /var/tmp/$PACKAGE
 
 echo "==> Installing @core packages..."
@@ -65,4 +70,16 @@ Documentation: $DOCS
 Description: $NAME $BUILD_DATE.
 PRODUCT
 
+echo "==> Installing Guest tools in $SOURCE"
+cp -r ./guest-tools/lib/smartdc $SOURCE/lib/
+cp -r ./guest-tools/usr/sbin/mdata-* $SOURCE/usr/sbin/
+cp -r ./guest-tools/usr/share/man/man1/mdata-* $SOURCE/usr/share/man/man1/
+cp ./guest-tools/lib/smartdc/joyent_rc.local $SOURCE/etc/rc.d/rc.local
+echo "==> Done!"
+sleep 1 
+
+echo "==> Saving installation as $TARGET. This may take a few minutes."
+tar czf $TARGET --exclude-from=exclude.txt $SOURCE/
+
 echo "==> Installation complete!"
+echo "==> $TARGET"
