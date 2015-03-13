@@ -42,8 +42,9 @@ cat << MOTD > $CHROOT/etc/motd
  _|  |_      | .-. .  . .-. :--. |-
 |_    _|     ;|   ||  |(.-' |  | |
   |__|   \`--'  \`-' \`;-| \`-' '  ' \`-'
-                   /  ;  Instance ($NAME $BUILDDATE)
+                   /  ;  Instance ($NAME $BUILD_DATE)
                    \`-'   $DOCS
+
 MOTD
 
 echo "==> Creating /etc/product file"
