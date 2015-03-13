@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# Copyright (c) 2015 Joyent Inc., All rights reserved.
+#
+# Create an lx-brand image from a given tar file
 
 set -euo pipefail
 IFS=$'\n\t'
