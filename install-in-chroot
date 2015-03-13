@@ -31,7 +31,7 @@ echo "==> Installing @core packages..."
 yum --installroot=$CHROOT install -y @core
 
 echo "== Installing additional packages..."
-yum --installroot=$CHROOT install -y vim-common vim-enhanced wget
+yum --installroot=$CHROOT install -y vim-common vim-enhanced wget man
 
 echo "==> Cleaning up yum cache..."
 yum --installroot=$CHROOT clean all
@@ -42,6 +42,7 @@ rm -rf /var/tmp/$PACKAGE
 echo "==> Setting TZ to UTC"
 pushd $PWD
 cd $CHROOT
+mv etc/localtime etc/localtime-backup
 ln -s usr/share/zoneinfo/UTC etc/localtime
 popd
 
