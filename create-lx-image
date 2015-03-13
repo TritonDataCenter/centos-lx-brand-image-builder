@@ -13,7 +13,7 @@ tarball=
 iuuid=$(uuid -v4)
 iuuid=centos-6-$BUILD_DATE
 
-usage() {
+function usage() {
 cat <<EOF
 
   Usage: $0 -t {path to archive}
