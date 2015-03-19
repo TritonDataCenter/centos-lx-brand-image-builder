@@ -1,8 +1,3 @@
 #!/bin/sh
 
-LD_LIBRARY_PATH_32="/native/lib:/native/usr/lib"
-LD_PRELOAD=/native/usr/lib/brand/lx/lx_thunk.so.1
-LD_BIND_NOW=1
-export LD_LIBRARY_PATH LD_PRELOAD LD_BIND_NOW
-
-exec /native/usr/lib/brand/lx/lx_native /native/usr/lib/ld.so.1 /native/usr/sbin/mdata-list $@
+exec /native/usr/sbin/chroot /native /lib/ld.so.1 -e LD_NOENVIRON=1 -e LD_NOCONFIG=1 /usr/sbin/mdata-list "$@"
