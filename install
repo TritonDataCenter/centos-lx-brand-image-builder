@@ -13,7 +13,7 @@ MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
 NAME="CentOS 6.6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
-DOCS="https://docs.joyent.com/images"
+DOCS="https://docs.joyent.com/images/lx-brand-beta/centos"
 TARGET="centos-6-lx-${BUILD_DATE}.tar.gz"
 
 echo "==> Installing CentOS 6.6 into $INSTALL_DIR"
