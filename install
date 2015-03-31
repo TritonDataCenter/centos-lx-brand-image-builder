@@ -30,6 +30,9 @@ rpm --rebuilddb --root=$INSTALL_DIR
 echo "==> Getting CentOS 6.6 rpm..."
 wget -O /var/tmp/$PACKAGE $MIRROR/$PACKAGE
 
+echo "==> Veryfying CentOS 6.6 rpm..."
+rpm -K /var/tmp/$PACKAGE
+
 echo "==> Installing rpm package..."
 rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$PACKAGE
 
