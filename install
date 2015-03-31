@@ -9,7 +9,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 INSTALL_DIR=/data/chroot
-MIRROR=http://mirror.centos.org/centos/6/os/x86_64/Packages
+MIRROR=http://yum.tamu.edu/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
 NAME="CentOS 6.6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
