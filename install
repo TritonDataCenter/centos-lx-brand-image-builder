@@ -76,6 +76,7 @@ if [[ ! -e "$INSTALL_DIR" ]] ; then
   echo "Directory $INSTALL_DIR not found"
   exit 1
 fi
+
 if [[ -z ${INSTALL_DIR} ]]; then
   echo "Error: missing install directory (-d) value"
   exit 1
