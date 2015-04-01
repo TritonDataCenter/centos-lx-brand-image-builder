@@ -8,13 +8,62 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-INSTALL_DIR=/data/chroot
-MIRROR=http://yum.tamu.edu/centos/6/os/x86_64/Packages
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
 NAME="CentOS 6.6 LX Brand"
 BUILD_DATE=$(date +%Y%m%d)
 DOCS="https://docs.joyent.com/images/lx-brand-beta"
 TARGET="centos-6-lx-${BUILD_DATE}.tar.gz"
+
+usage() {
+cat <<EOF
+
+  Usage: $0 -d <chroot> -m <mirror>
+  
+  Install and modify CentOS in a given directory in a given directory using a given mirror
+
+  Example:
+  $0 -d /data/chroot -m http://mirror.centos.org/centos/6/os/x86_64/Packages
+
+  OPTIONS:
+  -d A path to the install directory
+  -m A URL for the desired archive mirror
+  -h Show this message
+
+EOF
+}
+
+INSTALL_DIR=
+MIRROR=
+
+while getopts "hd:m:" OPTION
+do
+  case $OPTION in
+    h)
+      usage
+      exit
+      ;;
+    d)
+      INSTALL_DIR=${OPTARG%/}
+      ;;
+    m)
+      MIRROR=${OPTARG%/}
+      ;;
+    ?)
+      usage
+      exit
+      ;;
+  esac
+done
+
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 1
+fi
+
+if [[ ! -e "$INSTALL_DIR" ]] ; then
+  echo "Directory $INSTALL_DIR not found"
+  exit 1
+fi
 
 echo "==> Installing CentOS 6.6 into $INSTALL_DIR"
 
