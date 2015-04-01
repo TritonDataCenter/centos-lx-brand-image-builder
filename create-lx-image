@@ -11,7 +11,7 @@ BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="centos-6-lx"
 tarball=
 iuuid=$(uuid -v4)
-iuuid=centos-6-$BUILD_DATE
+iuuid=${IMAGE_NAME}-$BUILD_DATE
 
 usage() {
 cat <<EOF
