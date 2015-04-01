@@ -11,5 +11,5 @@ In order to use these scripts you'll need:
 
 ## Usage
 
-1. Run ./install under CentOS to install CentOs 6.6 in a directory. This will create a tarball of the installation in your working directory (named `centos-6-lx-$YYMMDD.tar.gz`)
+1. Run ./install -d <chroot> -m <mirror> under CentOS 6 to install CentOS 6.X in a given directory. This will create a tarball of the installation in your working directory (named `centos-6-lx-$YYMMDD.tar.gz`). See `./install -h` for usage
 2. Copy the tarball to a SmartOS machine or SDC headnode and run `./create-lx-image -t centos-6-lx-$YYMMDD.tar.gz` (substituting the name of your tar file). This will create the image file and manifest.
