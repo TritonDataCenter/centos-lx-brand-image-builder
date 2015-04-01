@@ -19,7 +19,7 @@ cat <<EOF
   Install and modify CentOS in a given directory in a given directory using a given mirror
 
   Example:
-  $0 -d /data/chroot -m http://mirror.centos.org/centos/6/os/x86_64/Packages i lx-centos-6 -p "CentOS 6.6 LX Brand" -u https://docs.joyent.com/images/lx-brand-beta
+  $0 -d /data/chroot -m http://mirror.centos.org/centos/6/os/x86_64/Packages -i lx-centos-6 -p "CentOS 6.6 LX Brand" -u https://docs.joyent.com/images/lx-brand-beta
 
   OPTIONS:
   -d A path to the install directory
