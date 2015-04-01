@@ -8,7 +8,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 BUILD_DATE=$(date +%Y%m%d)
-IMAGE_NAME="centos-6-lx"
+IMAGE_NAME="lx-centos-6"
 tarball=
 iuuid=$(uuid -v4)
 iuuid=${IMAGE_NAME}-$BUILD_DATE
@@ -184,7 +184,7 @@ create_file {
 
 create_manifest {
   echo "==> Creating manifest file..."
-  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -n lx-centos-6 -v ${BUILD_DATE} -d "${IMAGE_NAME} ${BUILD_DATE} LX-brand BETA image." -h https://docs.joyent.com/images/lx-brand-beta/centos > ${IMAGE_NAME}-${BUILD_DATE}.json
+  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -n ${IMAGE_NAME} -v ${BUILD_DATE} -d "${IMAGE_NAME} ${BUILD_DATE} LX-brand BETA image." -h https://docs.joyent.com/images/lx-brand-beta/centos > ${IMAGE_NAME}-${BUILD_DATE}.json
   echo "==> done!"
   echo "==>"
 }
