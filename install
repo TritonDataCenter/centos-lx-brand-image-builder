@@ -9,6 +9,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 PACKAGE=centos-release-6-6.el6.centos.12.2.x86_64.rpm
+GUESTTOOLS=guesttools
 BUILD_DATE=$(date +%Y%m%d)
 
 usage() {
@@ -165,14 +166,13 @@ Description: $NAME $BUILD_DATE.
 PRODUCT
 
 echo "==> Installing Guest tools in $INSTALL_DIR"
-chroot $INSTALL_DIR ln -s /native/usr/sbin/mdata-get /usr/sbin/mdata-get
-chroot $INSTALL_DIR ln -s /native/usr/sbin/mdata-put /usr/sbin/mdata-put
-chroot $INSTALL_DIR ln -s /native/usr/sbin/mdata-delete /usr/sbin/mdata-delete
-chroot $INSTALL_DIR ln -s /native/usr/sbin/mdata-list /usr/sbin/mdata-list
-cp -r ./guest-tools/usr/share/man/man1/mdata-* $INSTALL_DIR/usr/share/man/man1/
-cp ./guest-tools/lib/smartdc/joyent_rc.local $INSTALL_DIR/etc/rc.d/rc.local
-echo "==> Done!"
-sleep 1 
+echo "====> Initiallizing and fetching submodule $GUESTTOOLS"
+git submodule init
+git submodule update
+echo "====> Running ./install.sh -i $INSTALL_DIR"
+cd $GUESTTOOLS
+./install.sh -i $INSTALL_DIR
+cd ..
 
 echo "==> Saving installation as $TARGET. This may take a few minutes."
 tar czf $TARGET --exclude-from=exclude.txt $INSTALL_DIR/
