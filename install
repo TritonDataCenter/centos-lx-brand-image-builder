@@ -15,7 +15,7 @@ BUILD_DATE=$(date +%Y%m%d)
 usage() {
 cat <<EOF
 
-  Usage: $0 -d <chroot> -m <mirror> -i <image name> -p <proper name> -u <image docs>
+  Usage: $0 -d <INSTALL_DIR> -m <MIRROR> -i <IMAGE_NAME> -p <NAME> -u <DOCS>
   
   Install and modify CentOS in a given directory in a given directory using a given mirror
 
