@@ -9,8 +9,8 @@ IFS=$'\n\t'
 
 BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="lx-centos-6"
-tarball=
-iuuid=${IMAGE_NAME}-$BUILD_DATE
+TARBALL=
+IUUID=${IMAGE_NAME}-$BUILD_DATE
 
 usage() {
 cat <<EOF
@@ -34,7 +34,7 @@ do
       exit 1
       ;;
     t)
-      tarball="$OPTARG"
+      TARBALL="$OPTARG"
       ;;
     ?)
       usage
@@ -44,33 +44,33 @@ do
 done
 
 
-if [[ -z $tarball ]]; then
+if [[ -z $TARBALL ]]; then
   echo "==> ERROR: the install archive is required"
   usage
   exit 1
 fi
 
-if [[ ! -a "$tarball" ]]; then
-  printf "==> ERROR: %s: file or directory not found\n" $tarball
+if [[ ! -a "$TARBALL" ]]; then
+  printf "==> ERROR: %s: file or directory not found\n" $TARBALL
   exit 1
 fi
 
-if [[ "$(echo $tarball | cut -c 1)" != "/" ]]; then
-  printf "==> Pathname '%s' specified to -t must be absolute\n" $tarball
+if [[ "$(echo $TARBALL | cut -c 1)" != "/" ]]; then
+  printf "==> Pathname '%s' specified to -t must be absolute\n" $TARBALL
   exit 1
 fi
 
-if [[ ! -r "$tarball" ]]; then
-  printf "==> Cannot read file '%s'\n" $tarball
+if [[ ! -r "$TARBALL" ]]; then
+  printf "==> Cannot read file '%s'\n" $TARBALL
   exit 1
 fi
 
-if [[ ! -f "$tarball" ]]; then
+if [[ ! -f "$TARBALL" ]]; then
   echo "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
   exit 1
 fi
 
-filetype=$({ LC_ALL=C file $tarball | awk '{print $2}' ; } 2>/dev/null)
+filetype=$({ LC_ALL=C file $TARBALL | awk '{print $2}' ; } 2>/dev/null)
 
 if [[ "$filetype" = "gzip" ]]; then
   gtaropts="-xz"
@@ -87,12 +87,12 @@ fi
 
 gtaropts="${gtaropts}f"
 
-zpath="/zones/$iuuid"
-zroot="/zones/$iuuid/root"
+zpath="/zones/$IUUID"
+zroot="/zones/$IUUID/root"
 
 create_dataset() {
   echo "==> Creating dataset for image creation..."
-  zfs create zones/$iuuid
+  zfs create zones/$IUUID
   chmod 700 $zpath
 
   mkdir $zpath/root
@@ -101,16 +101,16 @@ create_dataset() {
   mkdir $zpath/cores
   chmod 755 $zpath/cores
 
-  echo "==> The dataset is zones/$iuuid"
+  echo "==> The dataset is zones/$IUUID"
   echo "==>"
 }
 
 install_tar() {
   echo "==> Installing the tar archive, this will take a few minutes..."
-  ( cd "$zroot" && gtar --strip-components=2 "$gtaropts" "$tarball" )
+  ( cd "$zroot" && gtar --strip-components=2 "$gtaropts" "$TARBALL" )
   if [[ "$?" -ne "0" ]] ; then
     echo "==> Error: extraction from tar archive failed."
-    zfs destroy -r zones/$iuuid
+    zfs destroy -r zones/$IUUID
   fi
 }
 
@@ -167,14 +167,14 @@ create_file() {
   echo "==> Creating image file:"
   
   echo "====> Creating snapshot..."
-  zfs snapshot zones/$iuuid@final
+  zfs snapshot zones/$IUUID@final
   
   echo "====> Doing a zfs send. This may take a few minutes..."
-  zfs send zones/$iuuid@final | gzip -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz
+  zfs send zones/$IUUID@final | gzip -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz
   echo "====> Done."
   
   echo "====> Cleaning up..."
-  zfs destroy -r zones/$iuuid
+  zfs destroy -r zones/$IUUID
   
   echo "==> Image File created!"
   echo "==>"
