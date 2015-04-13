@@ -10,7 +10,6 @@ IFS=$'\n\t'
 BUILD_DATE=$(date +%Y%m%d)
 IMAGE_NAME="lx-centos-6"
 tarball=
-iuuid=$(uuid -v4)
 iuuid=${IMAGE_NAME}-$BUILD_DATE
 
 usage() {
