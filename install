@@ -15,18 +15,20 @@ BUILD_DATE=$(date +%Y%m%d)
 usage() {
 cat <<EOF
 
-  Usage: $0 -d <INSTALL_DIR> -m <MIRROR> -i <IMAGE_NAME> -p <NAME> -u <DOCS>
-  
-  Install and modify CentOS in a given directory in a given directory using a given mirror
+Install and modify CentOS in a given directory in a given directory using a given mirror
 
-  Example:
-  $0 -d /data/chroot -m http://mirror.centos.org/centos/6/os/x86_64/Packages -i lx-centos-6 -p "CentOS 6.6 LX Brand" -u https://docs.joyent.com/images/lx-brand-beta
+Usage:
+  $0 -d <INSTALL_DIR> -m <MIRROR> -i <IMAGE_NAME> -p <NAME> -D <DESC> -u <DOCS>
 
-  OPTIONS:
+Example:
+  $0 -d /data/chroot -m http://mirror.centos.org/centos/6/os/x86_64/Packages -i lx-centos-6 -p "CentOS 6.6 LX Brand" -D "CentOS 6.6 64-bit lx-brand image." -u https://docs.joyent.com/images/lx-brand-beta
+
+OPTIONS:
   -d A path to the install directory
   -m A URL for the desired archive mirror
   -i The name of the image. This is used for naming the tarball. 
-  -p The proper name of the image. Use quotes. This is used in the MOTD and /etc/product file. 
+  -p The proper name of the image. Use quotes. This is used in the MOTD and /etc/product file.
+  -D A description for the image. This is used in the image manifest and the /etc/product file.
   -u A URL to the image docs [optional]
   -h Show this message
 
@@ -37,9 +39,10 @@ INSTALL_DIR=
 MIRROR=
 IMAGE_NAME=
 NAME=
+DESC=
 DOCS=
 
-while getopts "hd:m:i:p:u:" OPTION
+while getopts "hd:m:i:p:D:u:" OPTION
 do
   case $OPTION in
     h)
@@ -50,13 +53,16 @@ do
       INSTALL_DIR=${OPTARG%/}
       ;;
     m)
-      MIRROR=${OPTARG%/}
+      MIRROR=${OPTARG}
       ;;
     i)
       IMAGE_NAME=${OPTARG}
       ;;
     p)
       NAME=${OPTARG}
+      ;;
+    D)
+      DESC=${OPTARG}
       ;;
     u)
       DOCS=${OPTARG}
@@ -95,6 +101,11 @@ fi
 
 if [[ -z ${NAME} ]]; then
   echo "Error: missing proper name (-p) value"
+  exit 1
+fi
+
+if [[ -z ${DESC} ]]; then
+  echo "Error: missing image description (-D) value"
   exit 1
 fi
 
@@ -162,7 +173,7 @@ cat << PRODUCT > $INSTALL_DIR/etc/product
 Name: Joyent Instance
 Image: $NAME $BUILD_DATE
 Documentation: $DOCS
-Description: $NAME $BUILD_DATE.
+Description: $DESC
 PRODUCT
 
 echo "==> Installing Guest tools in $INSTALL_DIR"
