@@ -2,6 +2,7 @@
 #
 # Copyright (c) 2015 Joyent Inc., All rights reserved.
 #
+# Create an image manifest for a given image file
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -9,66 +10,95 @@ IFS=$'\n\t'
 now=$(date -u +%Y-%m-%dT%TZ)
 vm_uuid=$(uuid)
 SUM=/usr/bin/sum
+description=
+filename=
+kernel=
+min_platform=
+name=
+os=
+version=
+homepage=
 
 usage()
 {
-    cat <<USAGE
-Usage: $0 -f filename -n <name> -v <version> [options]
+  cat <<USAGE
 
-    -d <image description> (optional, default: "<NAME> <VERSION> VM Image")
-    -f <filename of VM image> (required)
-    -n <name of VM image> (required)
-    -v <version of VM image> (required)
-    -h <homepage link> (optional)
+Create an image manifest from a given image file
+
+Usage:
+  $0 -f <filename> -k <kernel_version> -m <min_platform> -n <name> -v <version>
+
+OPTIONS:
+  -d <image description> (optional, default: "<NAME> <VERSION> VM Image")
+  -f <filename of VM image> (required)
+  -k <kernel version for the VM image> (required)
+  -m <min_platform> (required)
+  -n <name of VM image> (required)
+  -o <the os of VM image> (optional, default: "other")
+  -v <version of VM image> (required)
+  -h <homepage link> (optional)
 
 Example:
 
-    $0 -f ubuntu-10.04.2.img.gz -n ubuntu -v 10.04.2
+  $0 -f ubuntu-14.04.20150319.zfs.gz -k 3.13.0 -m 20150316T201553Z -n lx-ubuntu-14.04 -v 20150319
 
 USAGE
     exit 1
 }
 
-while getopts d:f:n:v:h:? c; do
-    case ${c} in
-    d)
-        description=${OPTARG}
-        ;;
-    f)
-        filename=${OPTARG}
-        ;;
-    n)
-        name=${OPTARG}
-        ;;
-    v)
-        version=${OPTARG}
-        ;;
-    h)
-        homepage=${OPTARG}
-        ;;
-    \?)
-        usage
-        ;;
-    esac
+while getopts d:f:k:m:n:o:v:h:? OPTION
+do
+  case $OPTION in
+  d)
+      description=${OPTARG}
+      ;;
+  f)
+      filename=${OPTARG}
+      ;;
+  k)
+      kernel=${OPTARG}
+      ;;
+  m)
+      min_platform=${OPTARG}
+      ;;
+  n)
+      name=${OPTARG}
+      ;;
+  o)
+      os=${OPTARG}
+      ;;
+  v)
+      version=${OPTARG}
+      ;;
+  h)
+      homepage=${OPTARG}
+      ;;
+  \?)
+      usage
+      ;;
+  esac
 done
 
-if [[ -z ${filename} || -z ${name} || -z ${version} ]]; then
-    echo "FATAL: All of -f, -n and -v are required."
-    usage
+if [[ -z ${filename} || -z ${kernel} || -z ${min_platform} || -z ${name} || -z ${version} ]]; then
+  echo "FATAL: All of -f, -k, -m, -n and -v are required."
+  usage
 fi
 
 if [[ -z ${description} ]]; then
-    description="${name} ${version} LX-brand image"
+  description="${name} ${version} LX-brand image"
 fi
 
+if [[ -z ${os} ]]; then
+  os="other"
+fi
 
 if [[ -z ${homepage} ]]; then
-    homepage=https://docs.joyent.com/images
+  homepage=https://docs.joyent.com/images
 fi
 
 if [[ ! -f ${filename} ]]; then
-    echo "FATAL: ${filename} does not exist."
-    usage
+  echo "FATAL: ${filename} does not exist."
+  usage
 fi
 
 shasum=$($SUM -x sha1 ${filename} | cut -d' ' -f1)
@@ -83,7 +113,7 @@ cat <<EOF
   "description": "${description}",
   "homepage": "${homepage}",
   "published_at": "${now}",
-  "os": "other",
+  "os": "${os}",
   "files": [
     {
       "sha1": "${shasum}",
@@ -99,7 +129,7 @@ cat <<EOF
       }
     ],
     "min_platform": {
-         "7.0": "20150316T201553Z"
+         "7.0": "${min_platform}"
        }
   },
   "uuid": "${vm_uuid}",
@@ -107,7 +137,7 @@ cat <<EOF
   "owner": "00000000-0000-0000-0000-000000000000",
   "tags": {
     "role": "os",
-    "kernel_version": "2.6.32"
+    "kernel_version": "${kernel}"
   }
 }
 EOF
