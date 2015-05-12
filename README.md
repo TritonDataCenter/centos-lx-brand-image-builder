@@ -6,7 +6,7 @@ This is a collection of scripts used for creating an LX-brand CentOS image.
 
 In order to use these scripts you'll need:
 
-- A CentOS running in a VM or bare metal (required for the `install` script) 
+- A CentOS running in a KVM viarutal machine or bare metal (required for the `install` script). Running `install` in a CentOs lx-brand zone is not supported.
 - A SmartOS (or SDC headnode) install (required for the `create-lx-image` script)
 
 ## Usage
