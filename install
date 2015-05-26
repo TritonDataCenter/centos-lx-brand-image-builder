@@ -144,9 +144,9 @@ yum --installroot=$INSTALL_DIR install -y vim-common vim-enhanced wget man man-p
 echo "==> Removing all '*-firmware' packages (inlcuding the kernel-firmware)"
 yum --installroot=$INSTALL_DIR erase -y "*-firmware"
 
-YUMLIST="plymouth plymouth-core-libs plymouth-scripts grub redhat-logos"
-echo "==> Removing packages: $YUMLIST"
-yum --installroot=$INSTALL_DIR erase -y $YUMLIST
+YUMLIST=""
+echo "==> Removing unneeded packages installed via @core..."
+yum --installroot=$INSTALL_DIR erase -y plymouth plymouth-core-libs plymouth-scripts grub redhat-logos
 
 echo "==> Cleaning up yum cache..."
 yum --installroot=$INSTALL_DIR clean all
