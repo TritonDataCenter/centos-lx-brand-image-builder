@@ -139,7 +139,7 @@ echo "==> Installing @core packages..."
 yum --installroot=$INSTALL_DIR install -y @core
 
 echo "==> Installing additional packages..."
-yum --installroot=$INSTALL_DIR install -y vim-common vim-enhanced wget man man-pages openssh-clients
+yum --installroot=$INSTALL_DIR install -y vim-common vim-enhanced man man-pages openssh-clients
 
 echo "==> Removing all '*-firmware' packages (inlcuding the kernel-firmware)"
 yum --installroot=$INSTALL_DIR erase -y "*-firmware"
