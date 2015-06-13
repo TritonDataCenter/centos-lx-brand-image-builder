@@ -136,7 +136,8 @@ echo "==> Installing rpm package..."
 rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$PACKAGE
 
 echo "==> Installing @core packages..."
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y @core
+yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
+    --setopt=group_package_types=mandatory -y groupinstall Core
 
 echo "==> Installing additional packages..."
 yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y man openssh-clients
