@@ -140,7 +140,7 @@ yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
     --setopt=group_package_types=mandatory -y groupinstall Core
 
 echo "==> Installing additional packages..."
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y man openssh-clients
+yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y man openssh-clients vim-minimal
 
 echo "==> Removing all '*-firmware' packages (inlcuding the kernel-firmware)"
 yum --installroot=$INSTALL_DIR erase -y "*-firmware"
