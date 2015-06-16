@@ -142,10 +142,6 @@ yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
 echo "==> Installing additional packages..."
 yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y man openssh-clients sudo vim-minimal which
 
-YUMLIST=""
-echo "==> Removing unneeded packages installed via @core..."
-yum --installroot=$INSTALL_DIR erase -y plymouth plymouth-core-libs plymouth-scripts grub redhat-logos
-
 echo "==> Cleaning up yum cache..."
 yum --installroot=$INSTALL_DIR clean all
 
