@@ -124,7 +124,7 @@ if [[ -z ${DOCS} ]]; then
   DOCS="https://docs.joyent.com/images/lx-brand-beta"
 fi
 
-echo "==> Installing CentOS 6.6 into $INSTALL_DIR"
+echo "==> Installing CentOS into $INSTALL_DIR"
 
 if [[ -d $INSTALL_DIR ]]; then
   echo "====> Found previous chroot. Deleting and creating a new one."
@@ -135,7 +135,7 @@ fi
 
 rpm --rebuilddb --root=$INSTALL_DIR
 
-echo "==> Getting CentOS 6.6 rpm..."
+echo "==> Getting $RELEASE_PACKAGE..."
 wget -O /var/tmp/$RELEASE_PACKAGE $MIRROR/$RELEASE_PACKAGE
 
 echo "==> Veryfying $RELEASE_PACKAGE..."
