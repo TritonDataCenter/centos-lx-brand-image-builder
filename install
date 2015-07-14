@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2015 Joyent Inc., All rights reserved.
 #
-# Install CentOS 6.6 into a directory, modify the installation, then tar it up.
+# Install CentOS into a directory, modify the installation, then tar it up.
 #
 
 set -euo pipefail
