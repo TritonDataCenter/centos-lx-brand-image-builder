@@ -149,7 +149,7 @@ yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
     --setopt=group_package_types=mandatory -y groupinstall Core
 
 echo "==> Installing additional packages..."
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y less man net-tools openssh-clients sudo vim which wget
+yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y gettext less man net-tools openssh-clients sudo vim which wget
 
 echo "==> Updating packages..."
 yum --installroot=$INSTALL_DIR -y update
