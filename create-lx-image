@@ -224,7 +224,7 @@ create_file() {
   zfs snapshot zones/$IUUID@final
   
   echo "====> Doing a zfs send. This may take a few minutes..."
-  zfs send zones/$IUUID@final | gzip -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz
+  zfs send zones/$IUUID@final | xz -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.xz
   echo "====> Done."
   
   echo "====> Cleaning up..."
@@ -236,7 +236,7 @@ create_file() {
 
 create_manifest() {
   echo "==> Creating manifest file..."
-  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -k ${KERNEL} -m ${MIN_PLATFORM} -n ${IMAGE_NAME} -o linux -v ${BUILD_DATE} -d ${DESC} -h ${DOCS} > ${IMAGE_NAME}-${BUILD_DATE}.json
+  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.xz -k ${KERNEL} -m ${MIN_PLATFORM} -n ${IMAGE_NAME} -o linux -v ${BUILD_DATE} -d ${DESC} -h ${DOCS} > ${IMAGE_NAME}-${BUILD_DATE}.json
   echo "==> done!"
   echo "==>"
 }
