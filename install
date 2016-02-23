@@ -148,6 +148,13 @@ echo "==> Installing @core packages..."
 yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
     --setopt=group_package_types=mandatory -y groupinstall Core
 
+echo "==> Setting TZ to UTC"
+if [[ -f $INSTALL_DIR/etc/localtime ]]; then
+  rm $INSTALL_DIR/etc/localtime
+fi
+
+cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
+
 echo "==> Installing additional packages..."
 yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y gettext less man net-tools openssh-clients sudo vim which wget
 
@@ -159,13 +166,6 @@ yum --installroot=$INSTALL_DIR clean all
 
 echo "==> Removing /var/tmp/$RELEASE_PACKAGE"
 rm -rf /var/tmp/$RELEASE_PACKAGE
-
-echo "==> Setting TZ to UTC"
-if [[ -f $INSTALL_DIR/etc/localtime ]]; then
-  rm $INSTALL_DIR/etc/localtime
-fi
-
-cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
 
 echo "==> Disabling PasswordAuthentication"
 sed s/PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
