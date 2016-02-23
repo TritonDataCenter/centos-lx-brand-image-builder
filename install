@@ -160,7 +160,7 @@ echo "==> Setting locale to en_US.UTF-8"
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
     . $INSTALL_DIR/etc/os-release
     # Set locale for CentOS 7 and up using /etc/locale.conf
-    if [[ $VERSION_ID >= 7 ]]; then
+    if [[ "$VERSION_ID" -ge 7 ]]; then
         echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/locale.conf
     fi
 else
