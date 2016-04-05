@@ -147,7 +147,7 @@ rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$RELEASE_PACKAGE
 
 echo "==> Installing @core packages..."
 yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs \
-    --setopt=group_package_types=mandatory -y groupinstall Core
+    --setopt=group_package_types=mandatory -y groupinstall "Core"
 
 echo "==> Setting TZ to UTC"
 if [[ -f $INSTALL_DIR/etc/localtime ]]; then
