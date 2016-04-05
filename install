@@ -169,8 +169,8 @@ else
 fi
 
 echo "==> Installing Base group and additional packages..."
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs -y groupinstall "Base"
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs -y install gettext
+yum --installroot=$INSTALL_DIR -y groupinstall "Base"
+yum --installroot=$INSTALL_DIR -y install gettext
 
 echo "==> Updating packages..."
 yum --installroot=$INSTALL_DIR -y update
