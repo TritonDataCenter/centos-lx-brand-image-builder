@@ -146,7 +146,8 @@ echo "==> Installing rpm package..."
 rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$RELEASE_PACKAGE
 
 echo "==> Installing Core package group..."
-yum --installroot=$INSTALL_DIR -y groupinstall "Core"
+yum --installroot=$INSTALL_DIR --setopt=group_package_types=mandatory \
+    -y groupinstall "Core"
 
 echo "==> Setting TZ to UTC"
 if [[ -f $INSTALL_DIR/etc/localtime ]]; then
