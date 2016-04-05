@@ -169,7 +169,7 @@ else
 fi
 
 echo "==> Installing additional packages..."
-yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs install -y gettext less man net-tools openssh-clients sudo vim which wget
+yum --installroot=$INSTALL_DIR --setopt=tsflags=nodocs -y groupinstall "Base"
 
 echo "==> Updating packages..."
 yum --installroot=$INSTALL_DIR -y update
