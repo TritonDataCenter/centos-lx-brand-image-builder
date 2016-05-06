@@ -183,26 +183,28 @@ echo "==> Removing /var/tmp/$RELEASE_PACKAGE"
 rm -rf /var/tmp/$RELEASE_PACKAGE
 
 # Get release version via os-release
-CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
+# CentOS 6 does not have this file
+if [[ -f $INSTALL_DIR/etc/os-release ]]; then
+	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
 
-if [[ "$CHECK_VERSION" -ge 7 ]]; then
-  # Systemd overrides for systemd-timedated and systemd-hostnamed
-  # in CentOS 7 and newer
-  #
-  # See:
-  #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
-  #   - https://smartos.org/bugview/OS-5304
-  #
-  # TODO: This should be removed when the relevant cgroup etc support is in
-  # the platform.
-  SERVICES=( systemd-timedated systemd-hostnamed )
-  echo "==> Adding systemd overrides for: ${SERVICES[@]}"
+	if [[ "$CHECK_VERSION" -ge 7 ]]; then
+	  # Systemd overrides for systemd-timedated and systemd-hostnamed
+	  # in CentOS 7 and newer
+	  #
+	  # See:
+	  #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
+	  #   - https://smartos.org/bugview/OS-5304
+	  #
+	  # TODO: This should be removed when the relevant cgroup etc support is in
+	  # the platform.
+	  SERVICES=( systemd-timedated systemd-hostnamed )
+	  echo "==> Adding systemd overrides for: ${SERVICES[@]}"
   
-  for SERVICE in ${SERVICES[@]}; do
-    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
-    mkdir -p $OVERRIDE_DIR
+	  for SERVICE in ${SERVICES[@]}; do
+	    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
+	    mkdir -p $OVERRIDE_DIR
 
-    cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+	    cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
 [Service]
 PrivateTmp=no
 PrivateDevices=no
@@ -210,7 +212,8 @@ PrivateNetwork=no
 ProtectSystem=no
 ProtectHome=no
 OVERRIDE
-  done
+	  done
+	fi
 fi
 
 
