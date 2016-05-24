@@ -218,7 +218,8 @@ fi
 
 
 echo "==> Disabling PasswordAuthentication"
-sed s/PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
+sed -ri s/^#?PasswordAuthentication\ no/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
+sed -ri s/^#?PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
 
 echo "==> Setting UsePrivilegeSeparation"
 # The sandbox value causes an issue with lx-brand. Change to "yes"
