@@ -188,16 +188,16 @@ if [[ -f $INSTALL_DIR/etc/os-release ]]; then
 	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
 
 	if [[ "$CHECK_VERSION" -ge 7 ]]; then
-	  # Systemd overrides for systemd-timedated and systemd-hostnamed
-	  # in CentOS 7 and newer
+	  # Systemd overrides in CentOS 7 and newer
 	  #
 	  # See:
 	  #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
+    #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/7
 	  #   - https://smartos.org/bugview/OS-5304
 	  #
 	  # TODO: This should be removed when the relevant cgroup etc support is in
 	  # the platform.
-	  SERVICES=( systemd-timedated systemd-hostnamed )
+	  SERVICES=( systemd-hostnamed systemd-localed systemd-timedated )
 	  echo "==> Adding systemd overrides for: ${SERVICES[@]}"
   
 	  for SERVICE in ${SERVICES[@]}; do
