@@ -213,6 +213,21 @@ ProtectSystem=no
 ProtectHome=no
 OVERRIDE
 	  done
+
+    # Override for httpd (apache) service
+    # See IMAGE-926 and OS-5304
+	  SERVICES=( httpd )
+	  echo "==> Adding systemd overrides for: ${SERVICES[@]}"
+  
+	  for SERVICE in ${SERVICES[@]}; do
+	    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
+	    mkdir -p $OVERRIDE_DIR
+
+	    cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+[Service]
+PrivateTmp=no
+OVERRIDE
+	  done
 	fi
 fi
 
