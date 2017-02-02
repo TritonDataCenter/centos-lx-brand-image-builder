@@ -266,9 +266,10 @@ echo "====> Initiallizing and fetching submodule $GUESTTOOLS"
 git submodule init
 git submodule update
 echo "====> Running ./install.sh -i $INSTALL_DIR"
-cd $GUESTTOOLS
-./install.sh -i $INSTALL_DIR
-cd ..
+(
+	cd $GUESTTOOLS
+	./install.sh -i $INSTALL_DIR
+)
 
 echo "==> Saving installation as $TARGET. This may take a few minutes."
 tar czf $TARGET --exclude-from=exclude.txt $INSTALL_DIR/
