@@ -220,7 +220,7 @@ OVERRIDE
     # See IMAGE-926 and OS-5304
 	  SERVICES=( httpd )
 
-	  for SERVICE in ${SERVICES[@]}; do
+	  for SERVICE in "${SERVICES[@]}"; do
 			echo "==> Adding systemd overrides for: ${SERVICE}"
 	    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
 	    mkdir -p $OVERRIDE_DIR
