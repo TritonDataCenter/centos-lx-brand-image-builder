@@ -1,5 +1,7 @@
 # CentOS lx-brand Image Builder
 
+[![Build Status](https://travis-ci.org/joyent/centos-lx-brand-image-builder.svg?branch=master)](https://travis-ci.org/joyent/centos-lx-brand-image-builder) (shellcheck)
+
 This is a collection of scripts used for creating an LX-brand CentOS image.
 
 ## Requirements
