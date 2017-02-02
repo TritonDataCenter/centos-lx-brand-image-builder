@@ -160,6 +160,7 @@ cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
 echo "==> Setting locale to en_US.UTF-8"
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
     # Set locale for CentOS 7 and up using /etc/locale.conf
+		# shellcheck source=/dev/null
     CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
     if [[ "$CHECK_VERSION" -ge 7 ]]; then
         echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/locale.conf
@@ -185,6 +186,7 @@ rm -rf /var/tmp/$RELEASE_PACKAGE
 # Get release version via os-release
 # CentOS 6 does not have this file
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
+	# shellcheck source=/dev/null
 	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
 
 	if [[ "$CHECK_VERSION" -ge 7 ]]; then
