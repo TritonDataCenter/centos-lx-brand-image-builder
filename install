@@ -46,42 +46,42 @@ DOCS=
 
 while getopts "hd:m:r:i:p:D:u:" OPTION
 do
-  case $OPTION in
-    h)
-      usage
-      exit
-      ;;
-    d)
-      INSTALL_DIR=${OPTARG%/}
-      ;;
-    m)
-      MIRROR=${OPTARG}
-      ;;
-    r)
-      RELEASE_PACKAGE=${OPTARG}
-      ;;
-    i)
-      IMAGE_NAME=${OPTARG}
-      ;;
-    p)
-      NAME=${OPTARG}
-      ;;
-    D)
-      DESC=${OPTARG}
-      ;;
-    u)
-      DOCS=${OPTARG}
-      ;;
-    \?)
-      usage
-      exit
-      ;;
-  esac
+	case $OPTION in
+		h)
+			usage
+			exit
+			;;
+		d)
+			INSTALL_DIR=${OPTARG%/}
+			;;
+		m)
+			MIRROR=${OPTARG}
+			;;
+		r)
+		  RELEASE_PACKAGE=${OPTARG}
+		  ;;
+		i)
+			IMAGE_NAME=${OPTARG}
+			;;
+		p)
+			NAME=${OPTARG}
+			;;
+		D)
+			DESC=${OPTARG}
+			;;
+		u)
+			DOCS=${OPTARG}
+			;;
+		\?)
+			usage
+			exit
+			;;
+	esac
 done
 
 if [[ $# -eq 0 ]]; then
-  usage
-  exit 1
+	usage
+	exit 1
 fi
 
 if [[ ! -e ${INSTALL_DIR} ]] ; then
@@ -90,48 +90,48 @@ if [[ ! -e ${INSTALL_DIR} ]] ; then
 fi
 
 if [[ -z ${INSTALL_DIR} ]]; then
-  echo "Error: missing install directory (-d) value"
-  exit 1
+	echo "Error: missing install directory (-d) value"
+	exit 1
 fi
 
 if [[ -z ${MIRROR} ]]; then
-  echo "Error: missing mirror (-m) value"
-  exit 1
+	echo "Error: missing mirror (-m) value"
+	exit 1
 fi
 
 if [[ -z ${RELEASE_PACKAGE} ]]; then
-  echo "Error: missing release package (-r) value"
-  exit 1
+	echo "Error: missing release package (-r) value"
+	exit 1
 fi
 
 if [[ -z ${IMAGE_NAME} ]]; then
-  echo "Error: missing image name (-i) value"
-  exit 1
+	echo "Error: missing image name (-i) value"
+	exit 1
 fi
 
 if [[ -z ${NAME} ]]; then
-  echo "Error: missing proper name (-p) value"
-  exit 1
+	echo "Error: missing proper name (-p) value"
+	exit 1
 fi
 
 if [[ -z ${DESC} ]]; then
-  echo "Error: missing image description (-D) value"
-  exit 1
+	echo "Error: missing image description (-D) value"
+	exit 1
 fi
 
 TARGET="${IMAGE_NAME}-${BUILD_DATE}.tar.gz"
 
 if [[ -z ${DOCS} ]]; then
-  DOCS="https://docs.joyent.com/images/container-native-linux"
+	DOCS="https://docs.joyent.com/images/container-native-linux"
 fi
 
 echo "==> Installing CentOS into $INSTALL_DIR"
 
 if [[ -d $INSTALL_DIR ]]; then
-  echo "====> Found previous chroot. Deleting and creating a new one."
-  rm -rf $INSTALL_DIR
-  mkdir -p $INSTALL_DIR
-  mkdir -p $INSTALL_DIR/var/lib/rpm
+	echo "====> Found previous chroot. Deleting and creating a new one."
+	rm -rf $INSTALL_DIR
+	mkdir -p $INSTALL_DIR
+	mkdir -p $INSTALL_DIR/var/lib/rpm
 fi
 
 rpm --rebuilddb --root=$INSTALL_DIR
@@ -147,11 +147,11 @@ rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$RELEASE_PACKAGE
 
 echo "==> Installing Core package group..."
 yum --installroot=$INSTALL_DIR --setopt=group_package_types=mandatory \
-    -y groupinstall "Core"
+	-y groupinstall "Core"
 
 echo "==> Setting TZ to UTC"
 if [[ -f $INSTALL_DIR/etc/localtime ]]; then
-  rm $INSTALL_DIR/etc/localtime
+	rm $INSTALL_DIR/etc/localtime
 fi
 cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
 
@@ -159,15 +159,15 @@ cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
 # CentOS 6 does not have a /etc/os-release file
 echo "==> Setting locale to en_US.UTF-8"
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
-    # Set locale for CentOS 7 and up using /etc/locale.conf
-		# shellcheck source=/dev/null
-    CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
-    if [[ "$CHECK_VERSION" -ge 7 ]]; then
-        echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/locale.conf
-    fi
+	# Set locale for CentOS 7 and up using /etc/locale.conf
+	# shellcheck source=/dev/null
+	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
+	if [[ "$CHECK_VERSION" -ge 7 ]]; then
+		echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/locale.conf
+	fi
 else
-    # Assume this must be CentOS 6 or earlier so we use /etc/sysconfig/i18n
-    echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/sysconfig/i18n
+	# Assume this must be CentOS 6 or earlier so we use /etc/sysconfig/i18n
+	echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/sysconfig/i18n
 fi
 
 echo "==> Installing Base package group and additional packages..."
@@ -190,23 +190,23 @@ if [[ -f $INSTALL_DIR/etc/os-release ]]; then
 	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
 
 	if [[ "$CHECK_VERSION" -ge 7 ]]; then
-	  # Systemd overrides in CentOS 7 and newer
-	  #
-	  # See:
-	  #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
-    #   - https://github.com/joyent/centos-lx-brand-image-builder/issues/7
-	  #   - https://smartos.org/bugview/OS-5304
-	  #
-	  # TODO: This should be removed when the relevant cgroup etc support is in
-	  # the platform.
-	  SERVICES=( systemd-hostnamed systemd-localed systemd-timedated )
-  
-	  for SERVICE in "${SERVICES[@]}"; do
-			echo "==> Adding systemd overrides for: ${SERVICE}"
-	    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
-	    mkdir -p $OVERRIDE_DIR
+		# Systemd overrides in CentOS 7 and newer
+		#
+		# See:
+		#   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
+  	#   - https://github.com/joyent/centos-lx-brand-image-builder/issues/7
+		#   - https://smartos.org/bugview/OS-5304
+		#
+		# TODO: This should be removed when the relevant cgroup etc support is in
+		# the platform.
+		SERVICES=( systemd-hostnamed systemd-localed systemd-timedated )
 
-	    cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+		for SERVICE in "${SERVICES[@]}"; do
+			echo "==> Adding systemd overrides for: ${SERVICE}"
+			OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
+			mkdir -p $OVERRIDE_DIR
+
+			cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
 [Service]
 PrivateTmp=no
 PrivateDevices=no
@@ -216,23 +216,22 @@ ProtectHome=no
 OVERRIDE
 	  done
 
-    # Override for httpd (apache) service
-    # See IMAGE-926 and OS-5304
-	  SERVICES=( httpd )
+		# Override for httpd (apache) service
+		# See IMAGE-926 and OS-5304
+		SERVICES=( httpd )
 
-	  for SERVICE in "${SERVICES[@]}"; do
+		for SERVICE in "${SERVICES[@]}"; do
 			echo "==> Adding systemd overrides for: ${SERVICE}"
-	    OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
-	    mkdir -p $OVERRIDE_DIR
-
-	    cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+			OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
+			mkdir -p $OVERRIDE_DIR
+			
+			cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
 [Service]
 PrivateTmp=no
 OVERRIDE
-	  done
+		done
 	fi
 fi
-
 
 echo "==> Disabling PasswordAuthentication"
 sed -ri s/^#?PasswordAuthentication\ no/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
