@@ -244,8 +244,9 @@ create_manifest() {
 show_image_files() {
   echo "*** Image creation complete ***"
   echo "==> Image files:"
-  echo "$(ls | grep $BUILD_DATE)"
-  echo ""
+	echo "${IMAGE_NAME}-${BUILD_DATE}.zfs.gz"
+	echo "${IMAGE_NAME}-${BUILD_DATE}.json"
+	echo ""
 }
 
 create_dataset
