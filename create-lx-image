@@ -41,85 +41,84 @@ EOF
 
 while getopts "ht:k:m:i:d:u:" OPTION
 do
-  case $OPTION in
-    h)
-      usage
-      exit 1
-      ;;
-    t)
-      TARBALL=${OPTARG}
-      ;;
-    k)
-      KERNEL=${OPTARG}
-      ;;
-    m)
-      MIN_PLATFORM=${OPTARG}
-      ;;
-    i)
-      IMAGE_NAME=${OPTARG}
-      ;;
-    d)
-      DESC=${OPTARG}
-      ;;
-    u)
-      DOCS=${OPTARG}
-      ;;
-    ?)
-      usage
-      exit
-      ;;
-  esac
+	case $OPTION in
+		h)
+			usage
+			exit 1
+			;;
+		t)
+			TARBALL=${OPTARG}
+			;;
+		k)
+			KERNEL=${OPTARG}
+			;;
+		m)
+			MIN_PLATFORM=${OPTARG}
+			;;
+		i)
+			IMAGE_NAME=${OPTARG}
+			;;
+		d)
+			DESC=${OPTARG}
+			;;
+		u)
+			DOCS=${OPTARG}
+			;;
+		?)
+			usage
+			exit
+			;;
+	esac
 done
 
-
 if [[ -z $TARBALL ]]; then
-  echo "==> ERROR: the install archive is required"
-  usage
-  exit 1
+	echo "==> ERROR: the install archive is required"
+	usage
+	exit 1
 fi
 
 if [[ ! -a "$TARBALL" ]]; then
-  printf "==> ERROR: %s: file or directory not found\n" $TARBALL
-  exit 1
+	printf "==> ERROR: %s: file or directory not found\n" $TARBALL
+	exit 1
 fi
 
 if [[ "$(echo $TARBALL | cut -c 1)" != "/" ]]; then
-  printf "==> Pathname '%s' specified to -t must be absolute\n" $TARBALL
-  exit 1
+	printf "==> Pathname '%s' specified to -t must be absolute\n" $TARBALL
+	exit 1
 fi
 
 if [[ ! -r "$TARBALL" ]]; then
-  printf "==> Cannot read file '%s'\n" $TARBALL
-  exit 1
+	printf "==> Cannot read file '%s'\n" $TARBALL
+	exit 1
 fi
 
 if [[ ! -f "$TARBALL" ]]; then
-  echo "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
-  exit 1
+	echo "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
+	exit 1
 fi
 
 if [[ -z ${KERNEL} ]]; then
-  echo "Error: missing kernel version (-k) value"
-  exit 1
+	echo "Error: missing kernel version (-k) value"
+	exit 1
 fi
 
 if [[ -z ${MIN_PLATFORM} ]]; then
-  echo "Error: missing minimum platform (-m) value"
-  exit 1
+	echo "Error: missing minimum platform (-m) value"
+	exit 1
 fi
 
 if [[ -z ${IMAGE_NAME} ]]; then
-  echo "Error: missing image name (-i) value"
-  exit 1
+	echo "Error: missing image name (-i) value"
+	exit 1
 fi
 
 if [[ -z ${DESC} ]]; then
-  cho "Error: missing image description (-d) value"
-    exit 1
+	echo "Error: missing image description (-d) value"
+	exit 1
 fi
 
 if [[ -z ${DOCS} ]]; then
-  DOCS="https://docs.joyent.com/images/container-native-linux"
+	DOCS="https://docs.joyent.com/images/container-native-linux"
 fi
 
 IUUID=${IMAGE_NAME}-$BUILD_DATE
@@ -127,16 +126,16 @@ IUUID=${IMAGE_NAME}-$BUILD_DATE
 filetype=$({ LC_ALL=C file $TARBALL | awk '{print $2}' ; } 2>/dev/null)
 
 if [[ "$filetype" = "gzip" ]]; then
-  gtaropts="-xz"
+	gtaropts="-xz"
 elif [[ "$filetype" = "bzip2" ]]; then
-  gtaropts="-xj"
+	gtaropts="-xj"
 elif [[ "$filetype" = "compressed" ]]; then
-  gtaropts="-xZ"
+	gtaropts="-xZ"
 elif [[ "$filetype" = "USTAR" ]]; then
-  gtaropts="-x"
+	gtaropts="-x"
 else
-  printf "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
-  exit 1
+	printf "==> ERROR: must be a gzip, bzip2, .Z or uncompressed tar archive"
+	exit 1
 fi
 
 gtaropts="${gtaropts}f"
@@ -145,105 +144,104 @@ zpath="/zones/$IUUID"
 zroot="/zones/$IUUID/root"
 
 create_dataset() {
-  echo "==> Creating dataset for image creation..."
-  zfs create zones/$IUUID
-  chmod 700 $zpath
+	echo "==> Creating dataset for image creation..."
+	zfs create zones/$IUUID
+	chmod 700 $zpath
 
-  mkdir $zpath/root
-  chmod 755 $zpath/root
+	mkdir $zpath/root
+	chmod 755 $zpath/root
 
-  mkdir $zpath/cores
-  chmod 755 $zpath/cores
+	mkdir $zpath/cores
+	chmod 755 $zpath/cores
 
-  echo "==> The dataset is zones/$IUUID"
-  echo "==>"
+	echo "==> The dataset is zones/$IUUID"
+	echo "==>"
 }
 
 install_tar() {
-  echo "==> Installing the tar archive, this will take a few minutes..."
-  ( cd "$zroot" && gtar --strip-components=2 "$gtaropts" "$TARBALL" )
-  if [[ "$?" -ne "0" ]] ; then
-    echo "==> Error: extraction from tar archive failed."
-    zfs destroy -r zones/$IUUID
-  fi
+	echo "==> Installing the tar archive, this will take a few minutes..."
+	( cd "$zroot" && gtar --strip-components=2 "$gtaropts" "$TARBALL" )
+	if [[ "$?" -ne "0" ]] ; then
+		echo "==> Error: extraction from tar archive failed."
+		zfs destroy -r zones/$IUUID
+	fi
 }
 
-
 modify_image() {
-  echo "==> Modifying the image to work in a zone..."
+	echo "==> Modifying the image to work in a zone..."
 
-  echo "====> Creating /native directories..."
-  mkdir -p $zroot/native/dev
-  mkdir -p $zroot/native/etc/default
-  mkdir -p $zroot/native/etc/svc/volatile
-  mkdir -p $zroot/native/lib
-  mkdir -p $zroot/native/proc
-  mkdir -p $zroot/native/tmp
-  chmod 1777 $zroot/native/tmp
-  mkdir -p $zroot/native/usr
-  mkdir -p $zroot/native/var
-  echo "====> done."
-  
-  # Create the /var/ld/ld.config files that will point to /native/lib for our
-  # Solaris libraries.
-  
-  echo "====> Creating the /var/ld/ld.config file..."
-  mkdir $zroot/var/ld
-  mkdir $zroot/var/ld/64
+	echo "====> Creating /native directories..."
+	mkdir -p $zroot/native/dev
+	mkdir -p $zroot/native/etc/default
+	mkdir -p $zroot/native/etc/svc/volatile
+	mkdir -p $zroot/native/lib
+	mkdir -p $zroot/native/proc
+	mkdir -p $zroot/native/tmp
+	chmod 1777 $zroot/native/tmp
+	mkdir -p $zroot/native/usr
+	mkdir -p $zroot/native/var
+	echo "====> done."
+
+	# Create the /var/ld/ld.config files that will point to /native/lib for our
+	# Solaris libraries.
+
+	echo "====> Creating the /var/ld/ld.config file..."
+	mkdir $zroot/var/ld
+	mkdir $zroot/var/ld/64
 
 if crle -c $zroot/var/ld/ld.config -l /native/lib:/native/usr/lib \
-  -s /native/lib/secure:/native/usr/lib/secure ; then
-  echo "====> Created \"$zroot/var/ld/ld.config\""
+	-s /native/lib/secure:/native/usr/lib/secure ; then
+	echo "====> Created \"$zroot/var/ld/ld.config\""
 else
-  echo "====> Creation of \"$zroot/var/ld/ld.config\" failed!"
-  exit 1
+	echo "====> Creation of \"$zroot/var/ld/ld.config\" failed!"
+	exit 1
 fi
 
 if crle -64 -c $zroot/var/ld/64/ld.config \
-  -l /native/lib/amd64:/native/usr/lib/amd64 \
-  -s /native/lib/secure/amd64:/native/usr/lib/secure/amd64 ; then
-  echo "====> Created \"$zroot/var/ld/64/ld.config\""  
+	-l /native/lib/amd64:/native/usr/lib/amd64 \
+	-s /native/lib/secure/amd64:/native/usr/lib/secure/amd64 ; then
+	echo "====> Created \"$zroot/var/ld/64/ld.config\""  
 else
-  echo "====> Creation of \"$zroot/var/ld/64/ld.config\" failed!"
-  exit 1
+	echo "====> Creation of \"$zroot/var/ld/64/ld.config\" failed!"
+	exit 1
 fi
 
-  echo "====> Setting up fstab..."
+	echo "====> Setting up fstab..."
 cat << EOF > $zroot/etc/fstab
 none		/			zfs	defaults	1 1
 proc		/proc			proc	defaults	0 0
 EOF
-  
-  echo "==> Image modification complete."
+
+	echo "==> Image modification complete."
 }
 
 create_file() {
-  echo "==> Creating image file:"
-  
-  echo "====> Creating snapshot..."
-  zfs snapshot zones/$IUUID@final
-  
-  echo "====> Doing a zfs send. This may take a few minutes..."
-  zfs send zones/$IUUID@final | gzip -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz
-  echo "====> Done."
-  
-  echo "====> Cleaning up..."
-  zfs destroy -r zones/$IUUID
-  
-  echo "==> Image File created!"
-  echo "==>"
+	echo "==> Creating image file:"
+
+	echo "====> Creating snapshot..."
+	zfs snapshot zones/$IUUID@final
+
+	echo "====> Doing a zfs send. This may take a few minutes..."
+	zfs send zones/$IUUID@final | gzip -9 > ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz
+	echo "====> Done."
+
+	echo "====> Cleaning up..."
+	zfs destroy -r zones/$IUUID
+
+	echo "==> Image File created!"
+	echo "==>"
 }
 
 create_manifest() {
-  echo "==> Creating manifest file..."
-  ./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -k ${KERNEL} -m ${MIN_PLATFORM} -n ${IMAGE_NAME} -o linux -v ${BUILD_DATE} -d ${DESC} -h ${DOCS} > ${IMAGE_NAME}-${BUILD_DATE}.json
-  echo "==> done!"
-  echo "==>"
+	echo "==> Creating manifest file..."
+	./create-manifest -f ${IMAGE_NAME}-${BUILD_DATE}.zfs.gz -k ${KERNEL} -m ${MIN_PLATFORM} -n ${IMAGE_NAME} -o linux -v ${BUILD_DATE} -d ${DESC} -h ${DOCS} > ${IMAGE_NAME}-${BUILD_DATE}.json
+	echo "==> done!"
+	echo "==>"
 }
 
 show_image_files() {
-  echo "*** Image creation complete ***"
-  echo "==> Image files:"
+	echo "*** Image creation complete ***"
+	echo "==> Image files:"
 	echo "${IMAGE_NAME}-${BUILD_DATE}.zfs.gz"
 	echo "${IMAGE_NAME}-${BUILD_DATE}.json"
 	echo ""
