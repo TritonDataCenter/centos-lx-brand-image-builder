@@ -6,8 +6,14 @@
 #
 
 set -euo pipefail
-set -o xtrace
 IFS=$'\n\t'
+
+TRACE=
+
+if [[ -n "$TRACE" ]]; then
+  export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+  set -o xtrace
+fi
 
 GUESTTOOLS=guesttools
 BUILD_DATE=$(date +%Y%m%d)
