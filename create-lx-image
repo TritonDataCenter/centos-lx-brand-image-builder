@@ -4,15 +4,13 @@
 #
 # Create an lx-brand image from a given tar file
 
-set -euo pipefail
-IFS=$'\n\t'
-
-TRACE=
-
 if [[ -n "$TRACE" ]]; then
   export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
   set -o xtrace
 fi
+
+set -euo pipefail
+IFS=$'\n\t'
 
 BUILD_DATE=$(date +%Y%m%d)
 TARBALL=
@@ -207,7 +205,7 @@ fi
 if crle -64 -c $zroot/var/ld/64/ld.config \
 	-l /native/lib/amd64:/native/usr/lib/amd64 \
 	-s /native/lib/secure/amd64:/native/usr/lib/secure/amd64 ; then
-	echo "====> Created \"$zroot/var/ld/64/ld.config\""  
+	echo "====> Created \"$zroot/var/ld/64/ld.config\""
 else
 	echo "====> Creation of \"$zroot/var/ld/64/ld.config\" failed!"
 	exit 1

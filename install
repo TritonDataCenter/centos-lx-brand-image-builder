@@ -5,15 +5,13 @@
 # Install CentOS into a directory, modify the installation, then tar it up.
 #
 
-set -euo pipefail
-IFS=$'\n\t'
-
-TRACE=
-
 if [[ -n "$TRACE" ]]; then
   export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
   set -o xtrace
 fi
+
+set -euo pipefail
+IFS=$'\n\t'
 
 GUESTTOOLS=guesttools
 BUILD_DATE=$(date +%Y%m%d)
@@ -33,7 +31,7 @@ OPTIONS:
   -d A path to the install directory
   -m A URL for the desired archive mirror
   -r The release package used for installing CentOS
-  -i The name of the image. This is used for naming the tarball. 
+  -i The name of the image. This is used for naming the tarball.
   -p The proper name of the image. Use quotes. This is used in the MOTD and /etc/product file.
   -D A description for the image. This is used in the image manifest and the /etc/product file.
   -u A URL to the image docs [optional]
@@ -230,7 +228,7 @@ OVERRIDE
 			echo "==> Adding systemd overrides for: ${SERVICE}"
 			OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
 			mkdir -p $OVERRIDE_DIR
-			
+
 			cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
 [Service]
 PrivateTmp=no
