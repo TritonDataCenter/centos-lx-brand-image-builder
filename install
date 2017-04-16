@@ -16,6 +16,8 @@ IFS=$'\n\t'
 GUESTTOOLS=guesttools
 BUILD_DATE=$(date +%Y%m%d)
 
+export PATH=$PATH:/sbin:/bin
+
 usage() {
 cat <<EOF
 
