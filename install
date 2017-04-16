@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2015 Joyent Inc., All rights reserved.
+# Copyright (c) 2017 Joyent Inc., All rights reserved.
 #
 # Install CentOS into a directory, modify the installation, then tar it up.
 #
@@ -142,6 +142,20 @@ rpm --rebuilddb --root=$INSTALL_DIR
 
 echo "==> Getting $RELEASE_PACKAGE..."
 curl -sS -o /var/tmp/$RELEASE_PACKAGE $MIRROR/$RELEASE_PACKAGE
+
+echo "==> Downloading and installing signing keys"
+RELEASES=( 6 7 )
+URL=https://www.centos.org/keys
+
+mkdir -p /tmp/yum-keys
+
+for RELEASE in "${RELEASES[@]}"; do
+	curl -sS -o /tmp/yum-keysCentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
+	curl -sS -o /tmp/yum-keysCentOS-Debug-$RELEASE $URL/RPM-GPG-KEY-CentOS-Debug-$RELEASE
+	curl -sS -o /tmp/yum-keysCentOS-Security-$RELEASE $URL/RPM-GPG-KEY-CentOS-Security-$RELEASE
+	curl -sS -o /tmp/yum-keysCentOS-Testing-$RELEASE $URL/RPM-GPG-KEY-CentOS-Testing-$RELEASE
+done
+rpm --import /tmp/yum-keys/*
 
 echo "==> Veryfying $RELEASE_PACKAGE..."
 rpm -K /var/tmp/$RELEASE_PACKAGE
