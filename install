@@ -147,13 +147,10 @@ echo "==> Downloading and installing signing keys"
 RELEASES=( 6 7 )
 URL=https://www.centos.org/keys
 
-mkdir -p /tmp/yum-keys
-
 for RELEASE in "${RELEASES[@]}"; do
-	curl -sS -o /tmp/yum-keys/CentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
+	curl -sS -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
 done
-rpm --import /tmp/yum-keys/*
-rm -rf /tmp/yum-keys/*
+rpm --import /etc/pki/rpm-gpg/*
 
 echo "==> Veryfying $RELEASE_PACKAGE..."
 rpm -K /var/tmp/$RELEASE_PACKAGE
