@@ -153,6 +153,7 @@ for RELEASE in "${RELEASES[@]}"; do
 	curl -sS -o /tmp/yum-keys/CentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
 done
 rpm --import /tmp/yum-keys/*
+rm -rf /tmp/yum-keys/*
 
 echo "==> Veryfying $RELEASE_PACKAGE..."
 rpm -K /var/tmp/$RELEASE_PACKAGE
