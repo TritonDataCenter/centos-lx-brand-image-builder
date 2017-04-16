@@ -150,10 +150,10 @@ URL=https://www.centos.org/keys
 mkdir -p /tmp/yum-keys
 
 for RELEASE in "${RELEASES[@]}"; do
-	curl -sS -o /tmp/yum-keysCentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
-	curl -sS -o /tmp/yum-keysCentOS-Debug-$RELEASE $URL/RPM-GPG-KEY-CentOS-Debug-$RELEASE
-	curl -sS -o /tmp/yum-keysCentOS-Security-$RELEASE $URL/RPM-GPG-KEY-CentOS-Security-$RELEASE
-	curl -sS -o /tmp/yum-keysCentOS-Testing-$RELEASE $URL/RPM-GPG-KEY-CentOS-Testing-$RELEASE
+	curl -sS -o /tmp/yum-keys/CentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
+	curl -sS -o /tmp/yum-keys/CentOS-Debug-$RELEASE $URL/RPM-GPG-KEY-CentOS-Debug-$RELEASE
+	curl -sS -o /tmp/yum-keys/CentOS-Security-$RELEASE $URL/RPM-GPG-KEY-CentOS-Security-$RELEASE
+	curl -sS -o /tmp/yum-keys/CentOS-Testing-$RELEASE $URL/RPM-GPG-KEY-CentOS-Testing-$RELEASE
 done
 rpm --import /tmp/yum-keys/*
 
