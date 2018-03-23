@@ -255,6 +255,7 @@ sed -ri s/^#?PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $INSTALL
 echo "==> Setting UsePrivilegeSeparation"
 # The sandbox value causes an issue with lx-brand. Change to "yes"
 sed s/UsePrivilegeSeparation\ sandbox/UsePrivilegeSeparation\ yes/ -i $INSTALL_DIR/etc/ssh/sshd_config
+sed s/^#UsePrivilegeSeparation\ yes/UsePrivilegeSeparation\ yes/ -i $INSTALL_DIR/etc/ssh/sshd_config
 
 echo "==> Creating /etc/motd"
 cat << MOTD > $INSTALL_DIR/etc/motd
