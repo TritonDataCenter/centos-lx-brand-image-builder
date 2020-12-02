@@ -73,7 +73,7 @@ do
 	h)
 		homepage=${OPTARG}
 		;;
-	\?)
+	*)
 		usage
 		;;
 	esac
@@ -101,8 +101,8 @@ if [[ ! -f ${filename} ]]; then
 	usage
 fi
 
-shasum=$($SUM -x sha1 ${filename} | cut -d' ' -f1)
-filesize=$(wc -c < ${filename})
+shasum=$($SUM -x sha1 "${filename}" | cut -d' ' -f1)
+filesize=$(wc -c < "${filename}")
 
 cat <<EOF
 {
