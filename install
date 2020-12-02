@@ -5,6 +5,7 @@
 # Install CentOS into a directory, modify the installation, then tar it up.
 #
 
+# shellcheck disable=2154
 if [[ -n "$TRACE" ]]; then
   export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
   set -o xtrace
@@ -78,9 +79,9 @@ do
 		u)
 			DOCS=${OPTARG}
 			;;
-		\?)
+		*)
 			usage
-			exit
+			exit 1
 			;;
 	esac
 done
@@ -135,40 +136,40 @@ echo "==> Installing CentOS into $INSTALL_DIR"
 
 if [[ -d $INSTALL_DIR ]]; then
 	echo "====> Found previous chroot. Deleting and creating a new one."
-	rm -rf $INSTALL_DIR
-	mkdir -p $INSTALL_DIR
-	mkdir -p $INSTALL_DIR/var/lib/rpm
+	rm -rf "$INSTALL_DIR"
+	mkdir -p "$INSTALL_DIR"
+	mkdir -p "$INSTALL_DIR/var/lib/rpm"
 fi
 
-rpm --rebuilddb --root=$INSTALL_DIR
+rpm --rebuilddb --root="$INSTALL_DIR"
 
 echo "==> Getting $RELEASE_PACKAGE..."
-curl -sS -o /var/tmp/$RELEASE_PACKAGE $MIRROR/$RELEASE_PACKAGE
+curl -sS -o "/var/tmp/$RELEASE_PACKAGE" "$MIRROR/$RELEASE_PACKAGE"
 
 echo "==> Downloading and installing signing keys"
 RELEASES=( 6 7 )
 URL=https://www.centos.org/keys
 
 for RELEASE in "${RELEASES[@]}"; do
-	curl -sS -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-$RELEASE $URL/RPM-GPG-KEY-CentOS-$RELEASE
+	curl -sS -o "/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-$RELEASE" "$URL/RPM-GPG-KEY-CentOS-$RELEASE"
 done
 rpm --import /etc/pki/rpm-gpg/*
 
 echo "==> Veryfying $RELEASE_PACKAGE..."
-rpm -K /var/tmp/$RELEASE_PACKAGE
+rpm -K "/var/tmp/$RELEASE_PACKAGE"
 
 echo "==> Installing rpm package..."
-rpm -i --root=$INSTALL_DIR --nodeps /var/tmp/$RELEASE_PACKAGE
+rpm -i --root="$INSTALL_DIR" --nodeps "/var/tmp/$RELEASE_PACKAGE"
 
 echo "==> Installing Core package group..."
-yum --installroot=$INSTALL_DIR --setopt=group_package_types=mandatory \
+yum --installroot="$INSTALL_DIR" --setopt=group_package_types=mandatory \
 	-y groupinstall "Core"
 
 echo "==> Setting TZ to UTC"
 if [[ -f $INSTALL_DIR/etc/localtime ]]; then
-	rm $INSTALL_DIR/etc/localtime
+	rm "$INSTALL_DIR/etc/localtime"
 fi
-cp $INSTALL_DIR/usr/share/zoneinfo/UTC $INSTALL_DIR/etc/localtime
+cp "$INSTALL_DIR/usr/share/zoneinfo/UTC" "$INSTALL_DIR/etc/localtime"
 
 # Set locale.
 # CentOS 6 does not have a /etc/os-release file
@@ -176,40 +177,40 @@ echo "==> Setting locale to en_US.UTF-8"
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
 	# Set locale for CentOS 7 and up using /etc/locale.conf
 	# shellcheck source=/dev/null
-	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
+	CHECK_VERSION=$(. "$INSTALL_DIR/etc/os-release" && echo "$VERSION_ID")
 	if [[ "$CHECK_VERSION" -ge 7 ]]; then
-		echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/locale.conf
+		echo "LANG=\"en_US.UTF-8\"" > "$INSTALL_DIR/etc/locale.conf"
 	fi
 else
 	# Assume this must be CentOS 6 or earlier so we use /etc/sysconfig/i18n
-	echo "LANG=\"en_US.UTF-8\"" > $INSTALL_DIR/etc/sysconfig/i18n
+	echo "LANG=\"en_US.UTF-8\"" > "$INSTALL_DIR/etc/sysconfig/i18n"
 fi
 
 echo "==> Installing Base package group and additional packages..."
-yum --installroot=$INSTALL_DIR -y groupinstall "Base"
-yum --installroot=$INSTALL_DIR -y install gettext
+yum --installroot="$INSTALL_DIR" -y groupinstall "Base"
+yum --installroot="$INSTALL_DIR" -y install gettext
 
 echo "==> Updating packages..."
-yum --installroot=$INSTALL_DIR -y update
+yum --installroot="$INSTALL_DIR" -y update
 
 echo "==> Cleaning up yum cache..."
-yum --installroot=$INSTALL_DIR clean all
+yum --installroot="$INSTALL_DIR" clean all
 
 echo "==> Removing /var/tmp/$RELEASE_PACKAGE"
-rm -rf /var/tmp/$RELEASE_PACKAGE
+rm -rf "/var/tmp/$RELEASE_PACKAGE"
 
 # Get release version via os-release
 # CentOS 6 does not have this file
 if [[ -f $INSTALL_DIR/etc/os-release ]]; then
 	# shellcheck source=/dev/null
-	CHECK_VERSION=$(. $INSTALL_DIR/etc/os-release && echo $VERSION_ID)
+	CHECK_VERSION=$(. "$INSTALL_DIR/etc/os-release" && echo "$VERSION_ID")
 
 	if [[ "$CHECK_VERSION" -ge 7 ]]; then
 		# Systemd overrides in CentOS 7 and newer
 		#
 		# See:
 		#   - https://github.com/joyent/centos-lx-brand-image-builder/issues/5
-  	#   - https://github.com/joyent/centos-lx-brand-image-builder/issues/7
+		#   - https://github.com/joyent/centos-lx-brand-image-builder/issues/7
 		#   - https://smartos.org/bugview/OS-5304
 		#
 		# TODO: This should be removed when the relevant cgroup etc support is in
@@ -218,10 +219,10 @@ if [[ -f $INSTALL_DIR/etc/os-release ]]; then
 
 		for SERVICE in "${SERVICES[@]}"; do
 			echo "==> Adding systemd overrides for: ${SERVICE}"
-			OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
-			mkdir -p $OVERRIDE_DIR
+			OVERRIDE_DIR="$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d"
+			mkdir -p "$OVERRIDE_DIR"
 
-			cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+			cat << OVERRIDE > "${OVERRIDE_DIR}/override.conf"
 [Service]
 PrivateTmp=no
 PrivateDevices=no
@@ -237,10 +238,10 @@ OVERRIDE
 
 		for SERVICE in "${SERVICES[@]}"; do
 			echo "==> Adding systemd overrides for: ${SERVICE}"
-			OVERRIDE_DIR=$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d
-			mkdir -p $OVERRIDE_DIR
+			OVERRIDE_DIR="$INSTALL_DIR/etc/systemd/system/${SERVICE}.service.d"
+			mkdir -p "$OVERRIDE_DIR"
 
-			cat << OVERRIDE > ${OVERRIDE_DIR}/override.conf
+			cat << OVERRIDE > "${OVERRIDE_DIR}/override.conf"
 [Service]
 PrivateTmp=no
 OVERRIDE
@@ -249,16 +250,16 @@ OVERRIDE
 fi
 
 echo "==> Disabling PasswordAuthentication"
-sed -ri s/^#?PasswordAuthentication\ no/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
-sed -ri s/^#?PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i $INSTALL_DIR/etc/ssh/sshd_config
+sed -ri s/^#?PasswordAuthentication\ no/PasswordAuthentication\ no/ -i "$INSTALL_DIR"/etc/ssh/sshd_config
+sed -ri s/^#?PasswordAuthentication\ yes/PasswordAuthentication\ no/ -i "$INSTALL_DIR"/etc/ssh/sshd_config
 
 echo "==> Setting UsePrivilegeSeparation"
 # The sandbox value causes an issue with lx-brand. Change to "yes"
-sed s/UsePrivilegeSeparation\ sandbox/UsePrivilegeSeparation\ yes/ -i $INSTALL_DIR/etc/ssh/sshd_config
-sed s/^#UsePrivilegeSeparation\ yes/UsePrivilegeSeparation\ yes/ -i $INSTALL_DIR/etc/ssh/sshd_config
+sed s/UsePrivilegeSeparation\ sandbox/UsePrivilegeSeparation\ yes/ -i "$INSTALL_DIR"/etc/ssh/sshd_config
+sed s/^#UsePrivilegeSeparation\ yes/UsePrivilegeSeparation\ yes/ -i "$INSTALL_DIR"/etc/ssh/sshd_config
 
 echo "==> Creating /etc/motd"
-cat << MOTD > $INSTALL_DIR/etc/motd
+cat << MOTD > "$INSTALL_DIR/etc/motd"
    __        .                   .
  _|  |_      | .-. .  . .-. :--. |-
 |_    _|     ;|   ||  |(.-' |  | |
@@ -269,7 +270,7 @@ cat << MOTD > $INSTALL_DIR/etc/motd
 MOTD
 
 echo "==> Creating /etc/product file"
-cat << PRODUCT > $INSTALL_DIR/etc/product
+cat << PRODUCT > "$INSTALL_DIR/etc/product"
 Name: Joyent Instance
 Image: $NAME $BUILD_DATE
 Documentation: $DOCS
@@ -283,11 +284,11 @@ git submodule update
 echo "====> Running ./install.sh -i $INSTALL_DIR"
 (
 	cd $GUESTTOOLS
-	./install.sh -i $INSTALL_DIR
+	./install.sh -i "$INSTALL_DIR"
 )
 
 echo "==> Saving installation as $TARGET. This may take a few minutes."
-tar czf $TARGET --exclude-from=exclude.txt $INSTALL_DIR/
+tar czf "$TARGET" --exclude-from=exclude.txt "$INSTALL_DIR/"
 
 echo "==> Installation complete!"
 echo "==> $TARGET"
